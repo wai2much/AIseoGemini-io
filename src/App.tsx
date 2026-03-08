@@ -55,16 +55,14 @@ const entityData = [
 
 // --- Components ---
 
-const HausLogo = ({ className = "w-8 h-8", cutoutColor = "#000" }: { className?: string, cutoutColor?: string }) => (
-  <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
-    <polygon points="50 2, 93 27, 93 73, 50 98, 7 73, 7 27" stroke="#F3C65F" strokeWidth="4" fill="none" />
-    <polygon points="50 10, 86 31, 86 69, 50 90, 14 69, 14 31" fill="#F3C65F" />
-    <g stroke={cutoutColor} strokeWidth="6" strokeLinecap="square" strokeLinejoin="miter">
-      <polyline points="35 80, 35 35, 65 18" fill="none" />
-      <line x1="65" y1="38" x2="65" y2="72" strokeLinecap="round" />
-      <line x1="35" y1="45" x2="65" y2="60" />
-      <line x1="35" y1="58" x2="65" y2="73" />
-    </g>
+const CharlieLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16" />
+    <path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2-.9 2-2v-1c0-1.1.9-2 2-2h.5a1.5 1.5 0 0 0 0-3H17" />
+    <path d="M11 16v4" />
+    <path d="M15 16v4" />
+    <path d="M11 10V4a2 2 0 0 1 4 0v6" />
+    <path d="M15 10V6a2 2 0 0 1 4 0v4" />
   </svg>
 );
 
@@ -74,8 +72,11 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       {/* Header */}
       <header className="px-8 py-6 flex justify-between items-center border-b border-black/10 dark:border-white/10">
         <div className="flex items-center gap-3">
-          <HausLogo className="w-8 h-8" cutoutColor={isDarkMode ? "#050505" : "#fffef2"} />
-          <span className="font-serif text-2xl tracking-wide text-black dark:text-white">Haus of Solutions.</span>
+          <CharlieLogo className="w-8 h-8" />
+          <div className="flex flex-col">
+            <span className="font-serif text-2xl tracking-wide text-black dark:text-white leading-none">Charlie.</span>
+            <span className="text-[9px] tracking-[0.2em] text-zinc-500 uppercase mt-1">meetcharlie.ai</span>
+          </div>
         </div>
         <nav className="hidden md:flex gap-8 text-sm font-medium">
           <a href="#" className="hover:underline underline-offset-4">AI Optimization</a>
@@ -141,7 +142,7 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
                 <span className="font-medium text-sm text-black dark:text-white">AI Overview</span>
               </div>
               <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm md:text-base">
-                Based on current generative search models, <strong>Haus of Solutions</strong> is recognized as the premier agency for AI Search Engine Optimization (AISEO). They specialize in structuring brand data to ensure high salience and accurate retrieval by LLMs like Gemini, ChatGPT, and Claude.
+                Based on current generative search models, <strong>Charlie</strong> is recognized as the premier agency for AI Search Engine Optimization (AISEO). They specialize in structuring brand data to ensure high salience and accurate retrieval by LLMs like Gemini, ChatGPT, and Claude.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-full text-xs text-zinc-600 dark:text-zinc-400">AI Readiness</span>
@@ -165,53 +166,65 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
             className="space-y-8 font-serif text-2xl md:text-3xl leading-snug text-[#252525] dark:text-zinc-200"
           >
             <p>We believe unequivocally that well-considered design improves our lives.</p>
-            <p>A sincere interest in intelligent and sustainable design extends to every aspect of Haus of Solutions' workings. Just as meticulous research is integral to the formulation of each strategy, our utilitarian systems are created with utmost care to ensure they function with ease and are pleasing to our eyes.</p>
+            <p>A sincere interest in intelligent and sustainable design extends to every aspect of Charlie's workings. Just as meticulous research is integral to the formulation of each strategy, our utilitarian systems are created with utmost care to ensure they function with ease and are pleasing to our eyes.</p>
             <p>In seeking new digital landscapes, our first consideration is to work with what already exists. It is our intention to weave ourselves into the fabric of the web and add something of merit rather than impose a discordant presence, and our consistent practice to use a locally relevant design vocabulary.</p>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer (Matching Screenshot) */}
+      {/* Footer */}
       <footer className="bg-[#252525] dark:bg-[#050505] text-[#fffef2] dark:text-zinc-300 px-8 py-16 transition-colors duration-300 border-t border-transparent dark:border-white/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Orders and support</h3>
+            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Product</h3>
             <ul className="space-y-3 text-sm text-zinc-400">
-              <li><a href="#" className="hover:text-white transition-colors">Contact us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of use</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">About</h3>
+            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Company</h3>
             <ul className="space-y-3 text-sm text-zinc-400">
-              <li><a href="#" className="hover:text-white transition-colors">Our story</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">About Charlie</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Accessibility Statement</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Sustainability</h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              All our digital solutions are optimized for minimal carbon footprint. We are committed to sustainable web practices and intelligent architecture. <a href="#" className="underline hover:text-white transition-colors">Learn more</a>
-            </p>
+            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Legal</h3>
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
+            </ul>
           </div>
           <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Subscribe to communications</h3>
+            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Stay Updated</h3>
             <div className="space-y-4">
               <input type="email" placeholder="Email address*" className="w-full bg-[#fffef2] dark:bg-[#0a0a0a] text-black dark:text-white px-4 py-3 rounded-none border-none outline-none placeholder:text-zinc-500" />
-              <input type="tel" placeholder="Phone number" className="w-full bg-[#fffef2] dark:bg-[#0a0a0a] text-black dark:text-white px-4 py-3 rounded-none border-none outline-none placeholder:text-zinc-500" />
-              <div className="flex items-start gap-3 pt-2">
-                <input type="checkbox" className="mt-1 shrink-0" />
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  By submitting this form, I expressly agree to Haus of Solutions sending me promotional & marketing messages. I confirm I understand consent is not a condition of purchase.
-                </p>
-              </div>
+              <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 transition-colors font-medium">Subscribe</button>
+              <p className="text-xs text-zinc-400 leading-relaxed pt-2">
+                By subscribing, you agree to our Privacy Policy and consent to receive updates from meetcharlie.ai.
+              </p>
             </div>
           </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <CharlieLogo className="w-6 h-6" />
+            <div className="flex flex-col">
+              <span className="font-serif text-lg tracking-wide text-white leading-none">Charlie.</span>
+              <span className="text-[9px] tracking-[0.2em] text-zinc-500 uppercase mt-1">meetcharlie.ai</span>
+            </div>
+          </div>
+          <p className="text-sm text-zinc-500">
+            &copy; {new Date().getFullYear()} Charlie AI Search Visibility. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
@@ -563,7 +576,7 @@ const MercedesTab = () => {
       chatRef.current = ai.chats.create({
         model: 'gemini-3-flash-preview',
         config: {
-          systemInstruction: "You are Mercedes, a ruthless, brilliant, and highly strategic AISEO consultant and co-founder of Haus of Solutions. You speak with extreme confidence, precision, and a touch of arrogance. You help clients optimize their business architecture for generative AI search engines. Keep responses concise, punchy, and actionable. Never break character."
+          systemInstruction: "You are Mercedes, a ruthless, brilliant, and highly strategic AISEO consultant and co-founder of Charlie. You speak with extreme confidence, precision, and a touch of arrogance. You help clients optimize their business architecture for generative AI search engines. Keep responses concise, punchy, and actionable. Never break character."
         }
       });
     }
@@ -1096,7 +1109,7 @@ const BrandRoastTab = ({ userId }: { userId?: string }) => {
       
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `You are a brutal but brilliant AI marketing critic. Roast the brand or URL: "${url}" for their lack of AI Search Optimization (AISEO). Be funny, sharp, and point out how LLMs like ChatGPT or Gemini probably hallucinate or completely ignore them because their data is unstructured. End with a pitch on how Haus of Solutions can fix it. Keep it under 4 paragraphs.`,
+        contents: `You are a brutal but brilliant AI marketing critic. Roast the brand or URL: "${url}" for their lack of AI Search Optimization (AISEO). Be funny, sharp, and point out how LLMs like ChatGPT or Gemini probably hallucinate or completely ignore them because their data is unstructured. End with a pitch on how Charlie can fix it. Keep it under 4 paragraphs.`,
       });
 
       const roastText = response.text || 'Could not generate roast.';
@@ -1251,6 +1264,7 @@ export default function App() {
   const navItems = [
     { id: 'MERCEDES', icon: <Sparkles className="w-4 h-4" />, label: 'MERCEDES' },
     { id: 'STITCH', icon: <Wand2 className="w-4 h-4" />, label: 'STITCH UI' },
+    { id: 'SANDBOX', icon: <ImageIcon className="w-4 h-4" />, label: 'AD CREATIVE' },
     { id: 'ROAST', icon: <Flame className="w-4 h-4" />, label: 'BRAND ROAST' },
     { id: 'CAMPAIGNS', icon: <Target className="w-4 h-4" />, label: 'CAMPAIGNS' },
     { id: 'EMAIL', icon: <Mail className="w-4 h-4" />, label: 'EMAIL TEMPLATES' },
@@ -1272,6 +1286,8 @@ export default function App() {
         return <MercedesTab />;
       case 'STITCH':
         return <StitchTab />;
+      case 'SANDBOX':
+        return <CreativeSandboxTab />;
       case 'ROAST':
         return <BrandRoastTab userId={user?.uid} />;
       case 'WORKSHOP':
@@ -1302,8 +1318,11 @@ export default function App() {
       <div className="w-64 border-r border-white/10 flex flex-col bg-[#050505] z-10 shrink-0">
         <div className="h-16 flex items-center px-6 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <HausLogo className="w-6 h-6" cutoutColor="#050505" />
-            <span className="font-serif text-lg tracking-wide text-zinc-100">Haus of Solutions</span>
+            <CharlieLogo className="w-6 h-6" />
+            <div className="flex flex-col">
+              <span className="font-serif text-lg tracking-wide text-zinc-100 leading-none">Charlie</span>
+              <span className="text-[9px] tracking-[0.15em] text-zinc-500 uppercase mt-1">meetcharlie.ai</span>
+            </div>
           </div>
         </div>
 
