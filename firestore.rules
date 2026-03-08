@@ -1,0 +1,217 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required, immutable) - The unique identifier of the user.
+    //   - email: string (required) - The email address of the user.
+    //   - role: string (required, enum: 'INTERNAL', 'CLIENT') - The role of the user.
+    //   - createdAt: timestamp (required, immutable) - The time the user was created.
+    //
+    // Collection: scans
+    // Document ID: {scanId}
+    // Fields:
+    //   - userId: string (required, immutable) - The ID of the user who requested the scan.
+    //   - url: string (required) - The URL that was scanned.
+    //   - score: number (optional) - The AI readiness score.
+    //   - status: string (required, enum: 'pending', 'completed', 'failed') - The status of the scan.
+    //   - createdAt: timestamp (required, immutable) - The time the scan was requested.
+    //
+    // Collection: chatSessions
+    // Document ID: {sessionId}
+    // Fields:
+    //   - userId: string (required, immutable) - The ID of the user who owns the session.
+    //   - createdAt: timestamp (required, immutable) - The time the session was created.
+    //   - updatedAt: timestamp (required) - The time the session was last updated.
+    //
+    // Collection: chatSessions/{sessionId}/messages
+    // Document ID: {messageId}
+    // Fields:
+    //   - sessionId: string (required, immutable) - The ID of the chat session.
+    //   - role: string (required, enum: 'user', 'assistant') - The role of the message sender.
+    //   - content: string (required) - The content of the message.
+    //   - createdAt: timestamp (required, immutable) - The time the message was sent.
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'INTERNAL') ||
+          (request.auth.token.email == "waiwu1975@gmail.com" && request.auth.token.email_verified == true)
+        );
+    }
+
+    function hasOnlyAllowedFields(allowedFields) {
+      return request.resource.data.keys().hasOnly(allowedFields);
+    }
+
+    function hasRequiredFields(requiredFields) {
+      return request.resource.data.keys().hasAll(requiredFields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['uid', 'email', 'role', 'createdAt']) &&
+             hasRequiredFields(['uid', 'email', 'role', 'createdAt']) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
+             data.email is string && isValidEmail(data.email) && data.email.size() < 200 &&
+             data.role in ['INTERNAL', 'CLIENT'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidScan(data) {
+      return hasOnlyAllowedFields(['userId', 'url', 'score', 'status', 'entities', 'diagnostic', 'internalDiagnostic', 'createdAt']) &&
+             hasRequiredFields(['userId', 'url', 'status', 'createdAt']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.url is string && isValidUrl(data.url) && data.url.size() < 2000 &&
+             (!('score' in data) || (data.score is number && data.score >= 0 && data.score <= 100)) &&
+             (!('entities' in data) || (data.entities is string && data.entities.size() < 100000)) &&
+             (!('diagnostic' in data) || (data.diagnostic is string && data.diagnostic.size() < 100000)) &&
+             (!('internalDiagnostic' in data) || (data.internalDiagnostic is string && data.internalDiagnostic.size() < 100000)) &&
+             data.status in ['pending', 'completed', 'failed'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidRoast(data) {
+      return hasOnlyAllowedFields(['userId', 'url', 'roast', 'createdAt']) &&
+             hasRequiredFields(['userId', 'url', 'roast', 'createdAt']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.url is string && data.url.size() < 2000 &&
+             data.roast is string && data.roast.size() < 100000 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidChatSession(data) {
+      return hasOnlyAllowedFields(['userId', 'createdAt', 'updatedAt']) &&
+             hasRequiredFields(['userId', 'createdAt', 'updatedAt']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    function isValidChatMessage(data) {
+      return hasOnlyAllowedFields(['sessionId', 'role', 'content', 'createdAt']) &&
+             hasRequiredFields(['sessionId', 'role', 'content', 'createdAt']) &&
+             data.sessionId is string && data.sessionId.size() > 0 && data.sessionId.size() < 100 &&
+             data.role in ['user', 'assistant'] &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 100000 &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Users can create their own profile, but cannot assign themselves INTERNAL role unless they are already an admin
+      allow create: if isOwner(userId) && 
+                       isValidUser(request.resource.data) && 
+                       request.resource.data.uid == userId &&
+                       (request.resource.data.role == 'CLIENT' || isAdmin());
+                       
+      // Users can update their own profile, but cannot change their role or uid
+      allow update: if isOwner(userId) && 
+                       isValidUser(request.resource.data) && 
+                       request.resource.data.uid == resource.data.uid &&
+                       request.resource.data.createdAt == resource.data.createdAt &&
+                       (request.resource.data.role == resource.data.role || isAdmin());
+                       
+      allow delete: if isAdmin();
+    }
+
+    match /scans/{scanId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      allow create: if isAuthenticated() && 
+                       isValidScan(request.resource.data) && 
+                       request.resource.data.userId == request.auth.uid;
+                       
+      allow update: if isAuthenticated() && 
+                       isValidScan(request.resource.data) && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+                       
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /roasts/{roastId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      allow create: if isAuthenticated() && 
+                       isValidRoast(request.resource.data) && 
+                       request.resource.data.userId == request.auth.uid;
+                       
+      allow update: if isAuthenticated() && 
+                       isValidRoast(request.resource.data) && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+                       
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /chatSessions/{sessionId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      allow create: if isAuthenticated() && 
+                       isValidChatSession(request.resource.data) && 
+                       request.resource.data.userId == request.auth.uid;
+                       
+      allow update: if isAuthenticated() && 
+                       isValidChatSession(request.resource.data) && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+                       
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() && (get(/databases/$(database)/documents/chatSessions/$(sessionId)).data.userId == request.auth.uid || isAdmin());
+        
+        allow create: if isAuthenticated() && 
+                         isValidChatMessage(request.resource.data) && 
+                         request.resource.data.sessionId == sessionId &&
+                         get(/databases/$(database)/documents/chatSessions/$(sessionId)).data.userId == request.auth.uid;
+                         
+        allow update: if false; // Messages should be immutable
+        
+        allow delete: if isAuthenticated() && (get(/databases/$(database)/documents/chatSessions/$(sessionId)).data.userId == request.auth.uid || isAdmin());
+      }
+    }
+  }
+}

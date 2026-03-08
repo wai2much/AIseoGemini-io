@@ -1,0 +1,179 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique identifier of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the user."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["INTERNAL", "CLIENT"],
+          "description": "The role of the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the user was created."
+        }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "AiseoScan": {
+      "title": "AiseoScan",
+      "description": "An AISEO scan report.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who requested the scan."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL that was scanned."
+        },
+        "score": {
+          "type": "number",
+          "description": "The AI readiness score."
+        },
+        "entities": {
+          "type": "string",
+          "description": "JSON stringified array of entities."
+        },
+        "diagnostic": {
+          "type": "string",
+          "description": "Diagnostic message."
+        },
+        "internalDiagnostic": {
+          "type": "string",
+          "description": "Internal diagnostic message."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "completed", "failed"],
+          "description": "The status of the scan."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the scan was requested."
+        }
+      },
+      "required": ["userId", "url", "status", "createdAt"]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "A chat session with Mercedes.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the session."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the session was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the session was last updated."
+        }
+      },
+      "required": ["userId", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A message within a chat session.",
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "The ID of the chat session."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"],
+          "description": "The role of the message sender."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the message was sent."
+        }
+      },
+      "required": ["sessionId", "role", "content", "createdAt"]
+    },
+    "BrandRoast": {
+      "title": "BrandRoast",
+      "description": "An AI-generated brand roast.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who requested the roast."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL or brand name that was roasted."
+        },
+        "roast": {
+          "type": "string",
+          "description": "The generated roast text."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the roast was generated."
+        }
+      },
+      "required": ["userId", "url", "roast", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores user profiles."
+    },
+    "scans/{scanId}": {
+      "schema": {
+        "$ref": "#/entities/AiseoScan"
+      },
+      "description": "Stores AISEO scan reports."
+    },
+    "chatSessions/{sessionId}": {
+      "schema": {
+        "$ref": "#/entities/ChatSession"
+      },
+      "description": "Stores chat sessions."
+    },
+    "chatSessions/{sessionId}/messages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/ChatMessage"
+      },
+      "description": "Stores messages for a chat session."
+    },
+    "roasts/{roastId}": {
+      "schema": {
+        "$ref": "#/entities/BrandRoast"
+      },
+      "description": "Stores AI brand roasts."
+    }
+  }
+}
