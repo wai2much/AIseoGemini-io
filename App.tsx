@@ -130,7 +130,8 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
         <div className="flex items-center gap-3">
-          <img src="/charlie-logo-transparent.png" alt="Charlie" className="h-10 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+          <img src="/charlie-logo-transparent.png" alt="Charlie AI" className="h-10 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+          <span className="text-xl font-bold text-white tracking-tight">AI</span>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={onLogin} className="text-sm text-zinc-400 hover:text-white transition-colors hidden md:block">Log in</button>
