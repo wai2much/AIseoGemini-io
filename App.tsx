@@ -24,6 +24,7 @@ import { doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnaps
 import { GoogleGenAI, Type } from '@google/genai';
 import { WorkshopTab } from './components/WorkshopTab';
 import { StitchTab } from './components/StitchTab';
+import HeroRobot from './components/HeroRobot';
 
 // --- Utils ---
 function cn(...inputs: ClassValue[]) {
@@ -141,8 +142,15 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       </header>
 
       {/* HERO */}
-      <section className="pt-32 pb-16 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="pt-32 pb-16 px-6 md:px-10 relative overflow-hidden min-h-[90vh] flex items-center">
+        {/* 3D Robot Background */}
+        <div className="absolute inset-0 z-0">
+          <HeroRobot />
+        </div>
+        {/* Green ambient glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00E676]/5 rounded-full blur-[150px] z-0" />
+
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-6">AI Search Visibility Platform</p>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] mb-6" style={{ fontFamily: "'Roboto', sans-serif" }}>
