@@ -130,8 +130,8 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
         <div className="flex items-center gap-3">
-          <img src="/charlie-logo-transparent.png" alt="Charlie" className="w-8 h-8 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
-          <span className="text-xl font-bold text-white tracking-tight">Charlie</span>
+          <img src="/charlie-logo-transparent.png" alt="Charlie" className="h-10 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+          <span className="text-2xl font-bold text-white tracking-tight">Charlie</span>
         </div>
         <div className="flex items-center gap-4">
           <button onClick={onLogin} className="text-sm text-zinc-400 hover:text-white transition-colors hidden md:block">Log in</button>
@@ -286,7 +286,7 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       <footer className="border-t border-white/5 px-6 md:px-10 py-12">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img src="/charlie-logo-transparent.png" alt="Charlie" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+            <img src="/charlie-logo-transparent.png" alt="Charlie" className="h-8 w-auto object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
             <span className="text-sm font-bold text-white">MeetCharlie.ai</span>
           </div>
           <div className="flex items-center gap-6 text-xs text-zinc-600">
