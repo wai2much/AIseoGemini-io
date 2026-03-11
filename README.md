@@ -1,20 +1,30 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# MeetCharlie.ai — AI Search Visibility Platform
 
-# Run and deploy your AI Studio app
+Your brand's secret weapon for AI search dominance. Charlie, Mercedes, and Matt MacMillie — three AI agents built to make sure your business is the first answer AI gives.
 
-This contains everything you need to run your app locally.
+**Live:** [meetcharlie.ai](https://meetcharlie.ai)
 
-View your app in AI Studio: https://ai.studio/apps/6dc59670-eb30-42e6-929a-6d255467d213
+## Agents
+
+- **Charlie** — The AISEO Phantom. Structures brand data for LLM retrieval.
+- **Mercedes** — The Boardroom. Strategic advisor for business architecture.
+- **Matt MacMillie** — The Street. Campaign warfare and unconventional growth tactics.
+
+## Stack
+
+- React + TypeScript + Vite
+- Tailwind CSS
+- Firebase / Firestore
+- Gemini API
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:** Node.js
 
+1. `npm install`
+2. Set `GEMINI_API_KEY` in `.env.local`
+3. `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+Built by [Haus of Technik](https://hausoftechnik.com) — Solution-Forward B2B Services, Melbourne.
