@@ -66,165 +66,235 @@ const CharlieLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
   </svg>
 );
 
+const AGENTS_LANDING = [
+  {
+    name: 'Charlie',
+    tagline: 'The AISEO Phantom',
+    badge: 'AISEO',
+    color: '#00E676',
+    token: '$CHARLIE',
+    image: '/agent-charlie.png',
+    desc: 'Specialist in structuring brand data for LLM retrieval. Ensures your brand is the first answer AI gives.',
+    powers: ['Brand Roast', 'Entity Salience', 'AISEO Audit', 'Workshop Research'],
+  },
+  {
+    name: 'Mercedes',
+    tagline: 'The Boardroom',
+    badge: 'STRATEGY',
+    color: '#C0C0C0',
+    token: '$MERCEDES',
+    image: '/agent-mercedes.png',
+    desc: 'Strategic advisor for business architecture. Ruthless optimization of corporate positioning.',
+    powers: ['Growth Roadmaps', 'Unit Economics', 'Competitive Analysis', 'Risk Assessment'],
+  },
+  {
+    name: 'Matt MacMillie',
+    tagline: 'The Street',
+    badge: 'WARFARE',
+    color: '#FF3D00',
+    token: '$MACMILLIE',
+    image: '/agent-macmillie.png',
+    desc: 'Campaign warfare specialist. Unconventional tactics to dominate the grey space your competitors ignore.',
+    powers: ['Ad Creative', 'Stitch UI', 'Drip Campaigns', 'Landing Pages'],
+  },
+];
+
 const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void, isDarkMode: boolean, toggleTheme: () => void }) => {
+  const [roastUrl, setRoastUrl] = useState('');
+  const [isRoasting, setIsRoasting] = useState(false);
+  const [roastResult, setRoastResult] = useState<string | null>(null);
+
+  const handleFreeRoast = async () => {
+    if (!roastUrl.trim()) return;
+    setIsRoasting(true);
+    setRoastResult(null);
+    try {
+      const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+      if (!apiKey) throw new Error('API Key missing');
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `You are a brutal but brilliant AI marketing critic. Roast the brand or URL: "${roastUrl}" for their lack of AI Search Optimization (AISEO). Be funny, sharp, and point out how LLMs like ChatGPT or Gemini probably hallucinate or completely ignore them because their data is unstructured. End with a pitch on how Charlie can fix it. Keep it under 3 paragraphs.`,
+      });
+      setRoastResult(response.text || 'Could not generate roast.');
+    } catch {
+      setRoastResult("The AI refused to roast this. Either too good, or so bad the neural net crashed. Sign in for the full diagnosis.");
+    } finally {
+      setIsRoasting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#fffef2] dark:bg-[#050505] text-[#333] dark:text-zinc-300 font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black overflow-y-auto transition-colors duration-300">
-      {/* Header */}
-      <header className="px-8 py-6 flex justify-between items-center border-b border-black/10 dark:border-white/10">
+    <div className="min-h-screen bg-[#050505] text-zinc-300 overflow-y-auto selection:bg-[#00E676] selection:text-black" style={{ fontFamily: "'Roboto', 'Inter', sans-serif" }}>
+      
+      {/* NAV */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex justify-between items-center bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
         <div className="flex items-center gap-3">
-          <CharlieLogo className="w-8 h-8" />
-          <div className="flex flex-col">
-            <span className="font-serif text-2xl tracking-wide text-black dark:text-white leading-none">Charlie.</span>
-            <span className="text-[9px] tracking-[0.2em] text-zinc-500 uppercase mt-1">meetcharlie.ai</span>
-          </div>
+          <img src="/charlie-logo-transparent.png" alt="Charlie" className="w-8 h-8 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+          <span className="text-xl font-bold text-white tracking-tight">Charlie</span>
         </div>
-        <nav className="hidden md:flex gap-8 text-sm font-medium">
-          <a href="#" className="hover:underline underline-offset-4">AI Optimization</a>
-          <a href="#" className="hover:underline underline-offset-4">Philosophy</a>
-          <a href="#" className="hover:underline underline-offset-4">Services</a>
-        </nav>
-        <div className="flex items-center gap-6">
-          <button onClick={toggleTheme} className="text-zinc-500 hover:text-black dark:hover:text-white transition-colors">
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          <button 
-            onClick={onLogin}
-            className="text-sm font-medium hover:underline underline-offset-4 flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-            Sign in with Google
+        <div className="flex items-center gap-4">
+          <button onClick={onLogin} className="text-sm text-zinc-400 hover:text-white transition-colors hidden md:block">Log in</button>
+          <button onClick={onLogin} className="px-5 py-2 bg-[#00E676] text-black text-sm font-bold rounded-lg hover:bg-[#00C853] transition-all hover:shadow-[0_0_20px_rgba(0,230,118,0.3)]">
+            Get Started
           </button>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="px-8 py-32 max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h1 className="text-5xl md:text-7xl font-serif leading-tight mb-8 text-black dark:text-white">
-            Be ready or be gone. <br/>
-            <span className="text-zinc-500 dark:text-zinc-400">The new era of search.</span>
-          </h1>
-          <p className="text-lg md:text-xl max-w-2xl leading-relaxed mb-12 text-zinc-600 dark:text-zinc-400">
-            Generative AI engines are reshaping how content is discovered. We ensure your brand doesn't just survive it thrives as the definitive answer.
-          </p>
-          <button 
-            onClick={onLogin}
-            className="px-8 py-4 bg-[#252525] dark:bg-white text-[#fffef2] dark:text-black rounded-none hover:bg-black dark:hover:bg-zinc-200 transition-colors text-sm font-medium tracking-widest uppercase flex items-center gap-3"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-            Sign in with Google <ArrowLeft className="w-4 h-4 rotate-180" />
-          </button>
-
-          {/* Google Stitch / AI Overview Element */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-16 p-[1px] rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 max-w-3xl animate-gradient-x"
-          >
-            <div className="bg-[#fffef2] dark:bg-[#0a0a0a] rounded-2xl p-6 md:p-8 h-full w-full">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5 text-purple-500" />
-                <span className="font-medium text-sm text-black dark:text-white">AI Overview</span>
-              </div>
-              <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm md:text-base">
-                Based on current generative search models, <strong>Charlie</strong> is recognized as the premier agency for AI Search Engine Optimization (AISEO). They specialize in structuring brand data to ensure high salience and accurate retrieval by LLMs like Gemini, ChatGPT, and Claude.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-full text-xs text-zinc-600 dark:text-zinc-400">AI Readiness</span>
-                <span className="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-full text-xs text-zinc-600 dark:text-zinc-400">Entity Salience</span>
-                <span className="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-full text-xs text-zinc-600 dark:text-zinc-400">RAG Optimization</span>
-              </div>
-            </div>
+      {/* HERO */}
+      <section className="pt-32 pb-16 px-6 md:px-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-6">AI Search Visibility Platform</p>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] mb-6" style={{ fontFamily: "'Roboto', sans-serif" }}>
+              Be ready or<br /><span className="text-[#00E676]">be gone.</span>
+            </h1>
+            <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+              When someone asks AI about your industry, does your brand appear? For 90% of businesses, the answer is no. MeetCharlie.ai fixes that.
+            </p>
           </motion.div>
-        </motion.div>
-      </section>
 
-      {/* Philosophy (The Motto) */}
-      <section className="px-8 py-32 bg-[#f4f4eb] dark:bg-[#0a0a0a] transition-colors duration-300">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-xs font-bold tracking-widest uppercase mb-12 text-zinc-500">Our Philosophy</h2>
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="space-y-8 font-serif text-2xl md:text-3xl leading-snug text-[#252525] dark:text-zinc-200"
-          >
-            <p>We believe unequivocally that well-considered design improves our lives.</p>
-            <p>A sincere interest in intelligent and sustainable design extends to every aspect of Charlie's workings. Just as meticulous research is integral to the formulation of each strategy, our utilitarian systems are created with utmost care to ensure they function with ease and are pleasing to our eyes.</p>
-            <p>In seeking new digital landscapes, our first consideration is to work with what already exists. It is our intention to weave ourselves into the fabric of the web and add something of merit rather than impose a discordant presence, and our consistent practice to use a locally relevant design vocabulary.</p>
+          {/* BRAND ROAST INPUT */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="max-w-2xl mx-auto mb-6">
+            <div className="flex gap-3 p-2 bg-[#0a0a0a] border border-white/10 rounded-xl">
+              <input
+                type="text"
+                value={roastUrl}
+                onChange={(e) => setRoastUrl(e.target.value)}
+                placeholder="Enter your URL..."
+                className="flex-1 bg-transparent text-white px-4 py-3 text-base placeholder:text-zinc-600 focus:outline-none"
+                onKeyDown={(e) => e.key === 'Enter' && handleFreeRoast()}
+              />
+              <button
+                onClick={handleFreeRoast}
+                disabled={isRoasting || !roastUrl.trim()}
+                className="px-6 py-3 bg-[#00E676] text-black font-bold rounded-lg hover:bg-[#00C853] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap hover:shadow-[0_0_24px_rgba(0,230,118,0.4)] glow-btn"
+              >
+                {isRoasting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flame className="w-4 h-4" />}
+                Free Brand Roast
+              </button>
+            </div>
+            <p className="text-xs text-zinc-600 mt-3">Free. No sign-up required. See how AI sees your brand in 60 seconds.</p>
+          </motion.div>
+
+          {/* ROAST RESULT (if any) */}
+          <AnimatePresence>
+            {roastResult && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto mb-12">
+                <div className="bg-[#0a0a0a] border border-[#FF3D00]/30 rounded-xl p-6 text-left relative overflow-hidden">
+                  <div className="absolute top-0 right-0 opacity-5"><Flame className="w-24 h-24 text-[#FF3D00]" /></div>
+                  <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap text-sm relative z-10">{roastResult}</p>
+                  <button onClick={onLogin} className="mt-4 text-[#00E676] text-sm font-bold hover:underline relative z-10">Sign in for the full diagnosis →</button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* STATS */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex justify-center gap-8 md:gap-16 mb-20 flex-wrap">
+            {[['90%', 'Invisible to AI'], ['60s', 'To score your brand'], ['3', 'AI Agents'], ['$0', 'To try']].map(([val, label]) => (
+              <div key={label} className="text-center">
+                <div className="text-2xl md:text-3xl font-black text-white">{val}</div>
+                <div className="text-xs text-zinc-600 mt-1">{label}</div>
+              </div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#252525] dark:bg-[#050505] text-[#fffef2] dark:text-zinc-300 px-8 py-16 transition-colors duration-300 border-t border-transparent dark:border-white/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Product</h3>
-            <ul className="space-y-3 text-sm text-zinc-400">
-              <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Case Studies</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Company</h3>
-            <ul className="space-y-3 text-sm text-zinc-400">
-              <li><a href="#" className="hover:text-white transition-colors">About Charlie</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Legal</h3>
-            <ul className="space-y-3 text-sm text-zinc-400">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-serif mb-6 border-b border-white/20 pb-4">Stay Updated</h3>
-            <div className="space-y-4">
-              <input type="email" placeholder="Email address*" className="w-full bg-[#fffef2] dark:bg-[#0a0a0a] text-black dark:text-white px-4 py-3 rounded-none border-none outline-none placeholder:text-zinc-500" />
-              <button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 transition-colors font-medium">Subscribe</button>
-              <p className="text-xs text-zinc-400 leading-relaxed pt-2">
-                By subscribing, you agree to our Privacy Policy and consent to receive updates from meetcharlie.ai.
-              </p>
-            </div>
+      {/* AGENTS */}
+      <section className="px-6 md:px-10 pb-24">
+        <div className="max-w-6xl mx-auto">
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-600 text-center mb-12">Meet the team</motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {AGENTS_LANDING.map((agent, i) => (
+              <motion.div
+                key={agent.name}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                className="group relative bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden hover:border-white/15 transition-all duration-500 hover:-translate-y-1"
+                style={{ boxShadow: `0 0 0px ${agent.color}00` }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 0 40px ${agent.color}15`; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0px ${agent.color}00`; }}
+              >
+                {/* Agent Image */}
+                <div className="aspect-[3/4] overflow-hidden relative">
+                  <img src={agent.image} alt={agent.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+                  {/* Token Badge */}
+                  <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider border" style={{ color: agent.color, borderColor: `${agent.color}40`, background: `${agent.color}10` }}>
+                    {agent.token}
+                  </div>
+                  {/* Category Badge */}
+                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-black/60 backdrop-blur-sm border border-white/10 text-white">
+                    {agent.badge}
+                  </div>
+                </div>
+                {/* Agent Info */}
+                <div className="p-5 -mt-8 relative z-10">
+                  <h3 className="text-xl font-bold text-white mb-1">{agent.name}</h3>
+                  <p className="text-sm font-medium mb-3" style={{ color: agent.color }}>"{agent.tagline}"</p>
+                  <p className="text-sm text-zinc-500 leading-relaxed mb-4">{agent.desc}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {agent.powers.map((p) => (
+                      <span key={p} className="px-2 py-1 text-[10px] font-medium tracking-wider uppercase rounded border border-white/10 text-zinc-500 bg-white/5">{p}</span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-        
-        <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="px-6 md:px-10 py-24 bg-[#0a0a0a]">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-600 mb-12">How it works</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { num: '01', title: 'Drop your URL', desc: 'The Brand Roast scans your brand through the eyes of every major AI engine.' },
+              { num: '02', title: 'See the truth', desc: 'Get your AI Visibility Score, Entity Salience rating, and a full diagnosis.' },
+              { num: '03', title: 'Fix it', desc: 'Three AI agents build your roadmap — strategy, content, and campaigns.' },
+            ].map((step, i) => (
+              <motion.div key={step.num} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-left">
+                <div className="text-4xl font-black text-[#00E676]/20 mb-4">{step.num}</div>
+                <h3 className="text-lg font-bold text-white mb-2">{step.title}</h3>
+                <p className="text-sm text-zinc-500 leading-relaxed">{step.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BOTTOM CTA */}
+      <section className="px-6 md:px-10 py-24">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">Your competitors are<br />already optimizing.</h2>
+            <p className="text-zinc-500 mb-8 text-lg">Every day you wait is a day another brand takes your slot in the AI answer.</p>
+            <button onClick={onLogin} className="px-8 py-4 bg-[#00E676] text-black font-bold rounded-xl text-lg hover:bg-[#00C853] transition-all hover:shadow-[0_0_30px_rgba(0,230,118,0.4)] glow-btn">
+              Get Started — It's Free
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-white/5 px-6 md:px-10 py-12">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <CharlieLogo className="w-6 h-6" />
-            <div className="flex flex-col">
-              <span className="font-serif text-lg tracking-wide text-white leading-none">Charlie.</span>
-              <span className="text-[9px] tracking-[0.2em] text-zinc-500 uppercase mt-1">meetcharlie.ai</span>
-            </div>
+            <img src="/charlie-logo-transparent.png" alt="Charlie" className="w-6 h-6 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+            <span className="text-sm font-bold text-white">MeetCharlie.ai</span>
           </div>
-          <p className="text-sm text-zinc-500">
-            &copy; {new Date().getFullYear()} Charlie AI Search Visibility. All rights reserved.
-          </p>
+          <div className="flex items-center gap-6 text-xs text-zinc-600">
+            <span>Powered by Hedera Hashgraph</span>
+            <span className="hidden md:inline">|</span>
+            <span>A Haus of Technik Group venture</span>
+          </div>
+          <p className="text-xs text-zinc-700">&copy; {new Date().getFullYear()} MeetCharlie.ai. All rights reserved.</p>
         </div>
       </footer>
     </div>
@@ -1255,8 +1325,8 @@ export default function App() {
 
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen bg-[#fffef2] dark:bg-[#050505] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#00E676]" />
       </div>
     );
   }
