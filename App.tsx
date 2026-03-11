@@ -141,63 +141,90 @@ const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void
       </header>
 
       {/* HERO */}
-      <section className="pt-32 pb-16 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-6">AI Search Visibility Platform</p>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] mb-6" style={{ fontFamily: "'Roboto', sans-serif" }}>
-              Be ready or<br /><span className="text-[#00E676]">be gone.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-              When someone asks AI about your industry, does your brand appear? For 90% of businesses, the answer is no. MeetCharlie.ai fixes that.
-            </p>
-          </motion.div>
-
-          {/* BRAND ROAST INPUT */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="max-w-2xl mx-auto mb-6">
-            <div className="flex gap-3 p-2 bg-[#0a0a0a] border border-white/10 rounded-xl">
-              <input
-                type="text"
-                value={roastUrl}
-                onChange={(e) => setRoastUrl(e.target.value)}
-                placeholder="Enter your URL..."
-                className="flex-1 bg-transparent text-white px-4 py-3 text-base placeholder:text-zinc-600 focus:outline-none"
-                onKeyDown={(e) => e.key === 'Enter' && handleFreeRoast()}
-              />
-              <button
-                onClick={handleFreeRoast}
-                disabled={isRoasting || !roastUrl.trim()}
-                className="px-6 py-3 bg-[#00E676] text-black font-bold rounded-lg hover:bg-[#00C853] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap hover:shadow-[0_0_24px_rgba(0,230,118,0.4)] glow-btn"
-              >
-                {isRoasting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flame className="w-4 h-4" />}
-                Free Brand Roast
-              </button>
-            </div>
-            <p className="text-xs text-zinc-600 mt-3">Free. No sign-up required. See how AI sees your brand in 60 seconds.</p>
-          </motion.div>
-
-          {/* ROAST RESULT (if any) */}
-          <AnimatePresence>
-            {roastResult && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto mb-12">
-                <div className="bg-[#0a0a0a] border border-[#FF3D00]/30 rounded-xl p-6 text-left relative overflow-hidden">
-                  <div className="absolute top-0 right-0 opacity-5"><Flame className="w-24 h-24 text-[#FF3D00]" /></div>
-                  <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap text-sm relative z-10">{roastResult}</p>
-                  <button onClick={onLogin} className="mt-4 text-[#00E676] text-sm font-bold hover:underline relative z-10">Sign in for the full diagnosis →</button>
-                </div>
+      <section className="pt-28 pb-16 px-6 md:px-10 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh]">
+            
+            {/* LEFT — Text + CTA */}
+            <div className="relative z-10">
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-6">AI Search Visibility Platform</p>
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] mb-6" style={{ fontFamily: "'Roboto', sans-serif" }}>
+                  Be ready or<br /><span className="text-[#00E676]">be gone.</span>
+                </h1>
+                <p className="text-lg md:text-xl text-zinc-500 max-w-xl mb-10 leading-relaxed">
+                  When someone asks AI about your industry, does your brand appear? For 90% of businesses, the answer is no. MeetCharlie.ai fixes that.
+                </p>
               </motion.div>
-            )}
-          </AnimatePresence>
 
-          {/* STATS */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex justify-center gap-8 md:gap-16 mb-20 flex-wrap">
-            {[['90%', 'Invisible to AI'], ['60s', 'To score your brand'], ['3', 'AI Agents'], ['$0', 'To try']].map(([val, label]) => (
-              <div key={label} className="text-center">
-                <div className="text-2xl md:text-3xl font-black text-white">{val}</div>
-                <div className="text-xs text-zinc-600 mt-1">{label}</div>
-              </div>
-            ))}
-          </motion.div>
+              {/* BRAND ROAST INPUT */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }} className="max-w-xl mb-6">
+                <div className="flex gap-3 p-2 bg-[#0a0a0a] border border-white/10 rounded-xl">
+                  <input
+                    type="text"
+                    value={roastUrl}
+                    onChange={(e) => setRoastUrl(e.target.value)}
+                    placeholder="Enter your URL..."
+                    className="flex-1 bg-transparent text-white px-4 py-3 text-base placeholder:text-zinc-600 focus:outline-none"
+                    onKeyDown={(e) => e.key === 'Enter' && handleFreeRoast()}
+                  />
+                  <button
+                    onClick={handleFreeRoast}
+                    disabled={isRoasting || !roastUrl.trim()}
+                    className="px-6 py-3 bg-[#00E676] text-black font-bold rounded-lg hover:bg-[#00C853] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap hover:shadow-[0_0_24px_rgba(0,230,118,0.4)] glow-btn"
+                  >
+                    {isRoasting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flame className="w-4 h-4" />}
+                    Free Brand Roast
+                  </button>
+                </div>
+                <p className="text-xs text-zinc-600 mt-3">Free. No sign-up required. See how AI sees your brand in 60 seconds.</p>
+              </motion.div>
+
+              {/* ROAST RESULT (if any) */}
+              <AnimatePresence>
+                {roastResult && (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-xl mb-12">
+                    <div className="bg-[#0a0a0a] border border-[#FF3D00]/30 rounded-xl p-6 text-left relative overflow-hidden">
+                      <div className="absolute top-0 right-0 opacity-5"><Flame className="w-24 h-24 text-[#FF3D00]" /></div>
+                      <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap text-sm relative z-10">{roastResult}</p>
+                      <button onClick={onLogin} className="mt-4 text-[#00E676] text-sm font-bold hover:underline relative z-10">Sign in for the full diagnosis →</button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* STATS */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex gap-8 md:gap-12 flex-wrap">
+                {[['90%', 'Invisible to AI'], ['60s', 'To score your brand'], ['3', 'AI Agents'], ['$0', 'To try']].map(([val, label]) => (
+                  <div key={label} className="text-center">
+                    <div className="text-2xl md:text-3xl font-black text-white">{val}</div>
+                    <div className="text-xs text-zinc-600 mt-1">{label}</div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* RIGHT — Spline 3D Robot */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              className="relative h-[500px] md:h-[650px] lg:h-[750px] hidden lg:block"
+            >
+              <iframe
+                src="https://my.spline.design/95b11be5-c203-4914-a8b9-7a05fa62a46c/"
+                frameBorder="0"
+                width="100%"
+                height="100%"
+                style={{ border: 'none', borderRadius: '16px' }}
+                allow="autoplay"
+                title="Charlie AI Robot"
+              />
+              {/* Fade edges into background */}
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ boxShadow: 'inset 0 0 80px 40px #050505' }} />
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
