@@ -5,12 +5,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Leaf, Sparkles, Search, LayoutDashboard, Settings, Users, MessageSquare, 
-  ChevronRight, CheckCircle2, X, ShieldAlert, ShieldCheck, Building2, Mail, 
-  TrendingUp, Wrench, Briefcase, CheckSquare, Target, Sidebar, ArrowLeft, 
+import {
+  Leaf, Sparkles, Search, LayoutDashboard, Settings, Users, MessageSquare,
+  ChevronRight, CheckCircle2, X, ShieldAlert, ShieldCheck, Building2, Mail,
+  TrendingUp, Wrench, Briefcase, CheckSquare, Target, Sidebar, ArrowLeft,
   Sun, Moon, LogOut, Paperclip, Mic, Send, Activity, BarChart3, Globe, Zap,
-  ChevronDown, FileText, AlertCircle, Loader2, Image as ImageIcon, Wand2, Flame
+  ChevronDown, FileText, AlertCircle, Loader2, Image as ImageIcon, Wand2, Flame,
+  DollarSign, TrendingDown, AlertTriangle, CheckCircle, BarChart2, Phone, MousePointer
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -52,6 +53,168 @@ const entityData = [
   { name: 'Semantic Depth', score: 78 },
   { name: 'User Intent', score: 88 },
 ];
+
+// --- Demo Mode ---
+
+const MURGOV_DEMO = {
+  companyName: 'Murgov Properties',
+  url: 'murgovproperties.com.au',
+  event: 'OS Tuesday · 10am · Melbourne Service Centre',
+  aiseoScan: {
+    score: 34,
+    entities: [
+      { name: 'Investment Property Melbourne', score: 19 },
+      { name: 'Property Management', score: 41 },
+      { name: 'Rental Yield', score: 14 },
+      { name: 'Capital Growth', score: 28 },
+    ],
+    diagnostic: "Murgov Properties has critically low entity salience in AI search engines. LLMs like ChatGPT and Gemini cannot reliably cite murgovproperties.com.au as an authoritative source for Melbourne investment property advice. The site lacks structured content, FAQ schemas, and entity disambiguation that AI models require.",
+    internalDiagnostic: "Zero schema markup. Thin content pages with no topical authority clusters per suburb or property type. Competitors Nelson Alexander, Jellis Craig, and Hockingstuart dominate AI citations for 'Melbourne investment property' with 8–12× more entity mentions. Entity gap: 81%. Quick wins: FAQ schema injection, suburb-level landing pages, structured FAQ authority content for LLMs."
+  },
+  gads: {
+    spend: 10000,
+    estimatedWaste: 4100,
+    issues: [
+      { label: 'Broad match keywords burning budget on irrelevant searches', impact: 'CRITICAL' as const },
+      { label: 'No call conversion tracking — flying blind on ROI', impact: 'CRITICAL' as const },
+      { label: 'Zero remarketing to past website visitors', impact: 'HIGH' as const },
+      { label: 'Single generic landing page for all ad traffic', impact: 'HIGH' as const },
+      { label: 'No Performance Max for buyer/investor lead gen', impact: 'HIGH' as const },
+      { label: 'Ads running 24/7 without dayparting schedule', impact: 'MEDIUM' as const },
+    ],
+    strategy: [
+      { title: 'Conversion Tracking Setup', desc: 'Tag every phone call, form submit, and brochure download. We\'ll finally know what\'s actually working.', budget: '$0 extra', icon: 'phone' },
+      { title: 'Keyword Surgery', desc: 'Cut wasteful broad terms. Replace with high-intent long-tail: "off-plan apartments Brunswick 2026", "investment property northern corridor Melbourne".', budget: 'Saves ~$1,800/mo', icon: 'scissors' },
+      { title: 'Suburb-Specific Landing Pages', desc: 'One page per target suburb (Brunswick, Preston, Craigieburn). Match ad message to landing page to reduce CPA by 35–50%.', budget: 'Within current spend', icon: 'map' },
+      { title: 'Remarketing Campaigns', desc: 'Re-engage the 97% who visited but didn\'t enquire. Show them suburb-specific listings they viewed.', budget: '$800/mo allocation', icon: 'refresh' },
+      { title: 'Performance Max', desc: 'AI-driven campaigns across Search, Display, YouTube, Gmail, and Maps. Ideal for reaching investors researching at decision stage.', budget: '$2,000/mo allocation', icon: 'zap' },
+      { title: 'AI Ad Copy Lab', desc: 'Use Charlie\'s Creative Sandbox to A/B test 20+ ad variations monthly. Stop guessing what converts.', budget: 'Included in management', icon: 'sparkles' },
+    ]
+  }
+};
+
+const DemoBanner = ({ event }: { event: string }) => (
+  <div className="w-full bg-[#00E676] text-black py-2 px-6 flex items-center justify-between text-xs font-bold tracking-wider uppercase z-50 shrink-0">
+    <div className="flex items-center gap-3">
+      <span className="w-2 h-2 rounded-full bg-black/30 animate-pulse inline-block" />
+      LIVE DEMO MODE
+    </div>
+    <span className="opacity-70">{event}</span>
+    <span>CONFIDENTIAL — FOR CLIENT USE ONLY</span>
+  </div>
+);
+
+const GoogleAdsTab = () => {
+  const { gads, companyName, url } = MURGOV_DEMO;
+  const wastePercent = Math.round((gads.estimatedWaste / gads.spend) * 100);
+
+  return (
+    <div className="w-full h-full overflow-y-auto p-8 pb-32">
+      <div className="max-w-5xl mx-auto space-y-8">
+
+        {/* Header */}
+        <div>
+          <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-2">Google Ads Intelligence Report</p>
+          <h1 className="text-3xl font-serif text-white mb-1">{companyName}</h1>
+          <p className="text-zinc-500 text-sm font-mono">{url} · ${gads.spend.toLocaleString()}/month current spend</p>
+        </div>
+
+        {/* KPI Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-6 bg-[#0a0a0a] border border-red-500/20 rounded-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <TrendingDown className="w-4 h-4 text-red-400" />
+              <span className="text-xs font-bold tracking-widest uppercase text-zinc-500">Estimated Monthly Waste</span>
+            </div>
+            <div className="text-3xl font-serif text-red-400">${gads.estimatedWaste.toLocaleString()}</div>
+            <div className="text-xs text-zinc-600 mt-1">{wastePercent}% of total budget</div>
+          </div>
+          <div className="p-6 bg-[#0a0a0a] border border-[#00E676]/20 rounded-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <DollarSign className="w-4 h-4 text-[#00E676]" />
+              <span className="text-xs font-bold tracking-widest uppercase text-zinc-500">Recoverable Value</span>
+            </div>
+            <div className="text-3xl font-serif text-[#00E676]">${gads.estimatedWaste.toLocaleString()}</div>
+            <div className="text-xs text-zinc-600 mt-1">Same spend → better results</div>
+          </div>
+          <div className="p-6 bg-[#0a0a0a] border border-white/10 rounded-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Target className="w-4 h-4 text-purple-400" />
+              <span className="text-xs font-bold tracking-widest uppercase text-zinc-500">Critical Issues Found</span>
+            </div>
+            <div className="text-3xl font-serif text-white">{gads.issues.filter(i => i.impact === 'CRITICAL').length}</div>
+            <div className="text-xs text-zinc-600 mt-1">+ {gads.issues.filter(i => i.impact === 'HIGH').length} high priority items</div>
+          </div>
+        </div>
+
+        {/* Issues */}
+        <div className="bg-[#0a0a0a] border border-white/10 rounded-xl p-6">
+          <h3 className="text-sm font-bold tracking-widest uppercase text-zinc-400 mb-6 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-400" /> Current Account Issues
+          </h3>
+          <div className="space-y-3">
+            {gads.issues.map((issue, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-center gap-4 p-4 rounded-lg bg-black/40 border border-white/5"
+              >
+                <span className={cn(
+                  "text-[10px] font-bold tracking-wider px-2 py-1 rounded shrink-0",
+                  issue.impact === 'CRITICAL' ? 'bg-red-500/20 text-red-400' :
+                  issue.impact === 'HIGH' ? 'bg-orange-500/20 text-orange-400' :
+                  'bg-yellow-500/20 text-yellow-400'
+                )}>
+                  {issue.impact}
+                </span>
+                <span className="text-sm text-zinc-300">{issue.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Strategy */}
+        <div>
+          <h3 className="text-sm font-bold tracking-widest uppercase text-zinc-400 mb-6 flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-[#00E676]" /> Our 90-Day Google Ads Strategy
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {gads.strategy.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="p-5 bg-[#0a0a0a] border border-white/10 rounded-xl hover:border-[#00E676]/30 transition-colors group"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h4 className="text-sm font-bold text-white">{item.title}</h4>
+                  <span className="text-[10px] text-[#00E676] font-bold shrink-0 ml-3">{item.budget}</span>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="p-8 bg-[#0a0a0a] border border-[#00E676]/20 rounded-2xl text-center">
+          <p className="text-[#00E676] text-xs font-bold tracking-[0.3em] uppercase mb-3">The Opportunity</p>
+          <h2 className="text-2xl font-serif text-white mb-4">
+            Same $10K/month. <span className="text-[#00E676]">2–3× the leads.</span>
+          </h2>
+          <p className="text-zinc-500 text-sm max-w-lg mx-auto">
+            With proper conversion tracking, keyword surgery, and suburb-specific landing pages,
+            we project a 35–60% reduction in cost-per-lead within 90 days — without increasing your ad spend.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+};
 
 // --- Components ---
 
@@ -772,11 +935,11 @@ const MercedesTab = () => {
   );
 };
 
-const AiseoWorkspace = ({ role, onReplayOnboarding, userId }: { role: UserRole, onReplayOnboarding: () => void, userId?: string }) => {
-  const [url, setUrl] = useState('');
+const AiseoWorkspace = ({ role, onReplayOnboarding, userId, demoScan }: { role: UserRole, onReplayOnboarding: () => void, userId?: string, demoScan?: typeof MURGOV_DEMO.aiseoScan & { url: string } }) => {
+  const [url, setUrl] = useState(demoScan?.url || '');
   const [isScanning, setIsScanning] = useState(false);
-  const [hasResults, setHasResults] = useState(false);
-  const [scanData, setScanData] = useState<any>(null);
+  const [hasResults, setHasResults] = useState(!!demoScan);
+  const [scanData, setScanData] = useState<any>(demoScan || null);
 
   const handleAnalyze = async () => {
     if (!url) return;
@@ -1289,15 +1452,18 @@ const BrandRoastTab = ({ userId }: { userId?: string }) => {
 // --- Main App ---
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<ViewState>('LANDING');
-  const [role, setRole] = useState<UserRole>('CLIENT');
-  const [showOnboarding, setShowOnboarding] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabId>('AISEO');
+  const isDemoMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('demo') === 'murgov';
+
+  const [currentView, setCurrentView] = useState<ViewState>(isDemoMode ? 'DASHBOARD' : 'LANDING');
+  const [role, setRole] = useState<UserRole>(isDemoMode ? 'INTERNAL' : 'CLIENT');
+  const [showOnboarding, setShowOnboarding] = useState(!isDemoMode);
+  const [activeTab, setActiveTab] = useState<TabId>(isDemoMode ? 'AISEO' : 'AISEO');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthReady, setIsAuthReady] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(isDemoMode);
 
   useEffect(() => {
+    if (isDemoMode) return;
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
@@ -1317,7 +1483,7 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isDemoMode]);
 
   // Apply dark class to html element for Tailwind dark mode
   useEffect(() => {
@@ -1358,6 +1524,7 @@ export default function App() {
     { id: 'STITCH', icon: <Wand2 className="w-4 h-4" />, label: 'STITCH UI' },
     { id: 'SANDBOX', icon: <ImageIcon className="w-4 h-4" />, label: 'AD CREATIVE' },
     { id: 'ROAST', icon: <Flame className="w-4 h-4" />, label: 'BRAND ROAST' },
+    ...(isDemoMode ? [{ id: 'GADS', icon: <BarChart2 className="w-4 h-4" />, label: 'GOOGLE ADS' }] : []),
     { id: 'CAMPAIGNS', icon: <Target className="w-4 h-4" />, label: 'CAMPAIGNS' },
     { id: 'EMAIL', icon: <Mail className="w-4 h-4" />, label: 'EMAIL TEMPLATES' },
     { id: 'DRIP', icon: <TrendingUp className="w-4 h-4" />, label: 'DRIP CAMPAIGNS' },
@@ -1373,7 +1540,14 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'AISEO':
-        return <AiseoWorkspace role={role} onReplayOnboarding={() => setShowOnboarding(true)} userId={user?.uid} />;
+        return (
+          <AiseoWorkspace
+            role={role}
+            onReplayOnboarding={() => setShowOnboarding(true)}
+            userId={user?.uid}
+            demoScan={isDemoMode ? { ...MURGOV_DEMO.aiseoScan, url: MURGOV_DEMO.url } : undefined}
+          />
+        );
       case 'MERCEDES':
         return <MercedesTab />;
       case 'STITCH':
@@ -1382,6 +1556,8 @@ export default function App() {
         return <CreativeSandboxTab />;
       case 'ROAST':
         return <BrandRoastTab userId={user?.uid} />;
+      case 'GADS':
+        return <GoogleAdsTab />;
       case 'WORKSHOP':
         return <WorkshopTab />;
       case 'OVERVIEW':
@@ -1404,8 +1580,11 @@ export default function App() {
   }
 
   return (
-    <div className={cn("flex h-screen font-sans overflow-hidden", isDarkMode ? "dark bg-black text-white" : "bg-black text-white")}>
-      
+    <div className={cn("flex flex-col h-screen font-sans overflow-hidden", isDarkMode ? "dark bg-black text-white" : "bg-black text-white")}>
+
+      {isDemoMode && <DemoBanner event={MURGOV_DEMO.event} />}
+
+      <div className="flex flex-1 min-h-0">
       {/* --- Sidebar --- */}
       <div className="w-64 border-r border-white/10 flex flex-col bg-[#050505] z-10 shrink-0">
         <div className="h-16 flex items-center px-6 border-b border-white/10 shrink-0">
@@ -1482,6 +1661,7 @@ export default function App() {
       </div>
 
       <OnboardingModal isOpen={showOnboarding} onClose={() => setShowOnboarding(false)} onComplete={() => setShowOnboarding(false)} />
+      </div>
     </div>
   );
 }
