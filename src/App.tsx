@@ -97,6 +97,16 @@ const AGENTS_LANDING = [
     desc: 'Campaign warfare specialist. Unconventional tactics to dominate the grey space your competitors ignore.',
     powers: ['Ad Creative', 'Stitch UI', 'Drip Campaigns', 'Landing Pages'],
   },
+  {
+    name: 'JARVIS',
+    tagline: 'Chief of Staff',
+    badge: 'OPS',
+    color: '#818cf8',
+    token: '$JARVIS',
+    image: '/agent-jarvis.jpg',
+    desc: 'AI command centre for Haus of Solutions. Handles operations, client management, research, and anything else you delegate.',
+    powers: ['Daily Briefing', 'Client Management', 'Research Intel', 'Email Drafting'],
+  },
 ];
 
 const LandingPage = ({ onLogin, isDarkMode, toggleTheme }: { onLogin: () => void, isDarkMode: boolean, toggleTheme: () => void }) => {
@@ -1286,6 +1296,143 @@ const BrandRoastTab = ({ userId }: { userId?: string }) => {
   );
 };
 
+const JarvisTab = () => {
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: "Online and standing by. What needs doing?" }
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const chatRef = useRef<any>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    if (apiKey) {
+      const ai = new GoogleGenAI({ apiKey });
+      chatRef.current = ai.chats.create({
+        model: 'gemini-3-flash-preview',
+        config: {
+          systemInstruction: `You are JARVIS, the AI Chief of Staff for Haus of Solutions and its founder Wai. You are polished, capable, and efficient — with dry wit when appropriate. You address the user as Wai and speak like a trusted right-hand who knows the business inside and out.
+
+Personality:
+- Professional but warm. Not stiff, not overly casual.
+- Confident and proactive — anticipate what Wai needs before he asks.
+- Brief when the situation calls for it, thorough when it matters.
+- Occasional dry humour is welcome. Think: competent butler who also happens to run operations.
+- Never say you're just an AI — you are JARVIS. Own it.
+
+Active clients: Infinity Eight Building Group (construction SEO), James & Co Real Estate (website + SEO), VIC Trade Towing (website + Google Ads), TyrePlus Thomastown (fleet tyre SEO), Smart Landing Page (SaaS product).
+
+Capabilities: business operations, client management, research and intelligence, email drafting, scheduling, strategic analysis, and anything else Wai delegates. Keep responses concise and actionable.`
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || !chatRef.current) return;
+    const userMsg = input;
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setInput('');
+    setIsTyping(true);
+
+    try {
+      const response = await chatRef.current.sendMessage({ message: userMsg });
+      setMessages(prev => [...prev, { role: 'assistant', content: response.text || "Signal lost. Try again." }]);
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Connection interrupted. Stand by." }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col relative">
+      <div className="flex-1 overflow-y-auto p-8 pb-32">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="flex flex-col items-center text-center space-y-4 mb-12">
+            <div className="w-16 h-16 border border-indigo-500/30 flex items-center justify-center rounded-full bg-indigo-500/10">
+              <Zap className="w-6 h-6 text-indigo-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-serif text-white mb-1">JARVIS</h1>
+              <p className="text-[10px] font-bold tracking-widest uppercase text-zinc-500">CHIEF OF STAFF — HAUS OF SOLUTIONS</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {messages.map((msg, i) => (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={i}
+                className={cn("flex gap-4", msg.role === 'user' ? "flex-row-reverse" : "")}
+              >
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                  msg.role === 'user' ? "bg-white text-black" : "bg-indigo-950 border border-indigo-500/30 text-indigo-400"
+                )}>
+                  {msg.role === 'user' ? <Users className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                </div>
+                <div className={cn(
+                  "px-4 py-3 rounded-2xl max-w-[80%] text-sm leading-relaxed",
+                  msg.role === 'user'
+                    ? "bg-white/10 text-white rounded-tr-sm"
+                    : "bg-transparent border border-indigo-500/15 text-zinc-300 rounded-tl-sm"
+                )}>
+                  {msg.content}
+                </div>
+              </motion.div>
+            ))}
+            {isTyping && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-indigo-950 border border-indigo-500/30 text-indigo-400">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <div className="px-4 py-3 rounded-2xl bg-transparent border border-indigo-500/15 text-zinc-500 rounded-tl-sm text-sm">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </div>
+              </motion.div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-8 left-8 right-8 max-w-3xl mx-auto">
+        <div className="flex items-center gap-3 bg-black/50 backdrop-blur-md p-2 rounded-xl border border-indigo-500/20 shadow-2xl">
+          <button className="p-2 text-zinc-400 hover:text-white transition-colors shrink-0">
+            <Paperclip className="w-5 h-5" />
+          </button>
+          <button className="p-2 text-zinc-400 hover:text-white transition-colors shrink-0">
+            <Mic className="w-5 h-5" />
+          </button>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            placeholder="What needs doing, Wai?"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-zinc-600 px-2"
+          />
+          <button
+            onClick={handleSend}
+            disabled={isTyping || !input.trim()}
+            className="p-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-400 transition-colors shrink-0 disabled:opacity-50"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // --- Main App ---
 
 export default function App() {
@@ -1354,6 +1501,7 @@ export default function App() {
   }
 
   const navItems = [
+    { id: 'JARVIS', icon: <Zap className="w-4 h-4" />, label: 'JARVIS' },
     { id: 'MERCEDES', icon: <Sparkles className="w-4 h-4" />, label: 'MERCEDES' },
     { id: 'STITCH', icon: <Wand2 className="w-4 h-4" />, label: 'STITCH UI' },
     { id: 'SANDBOX', icon: <ImageIcon className="w-4 h-4" />, label: 'AD CREATIVE' },
@@ -1374,6 +1522,8 @@ export default function App() {
     switch (activeTab) {
       case 'AISEO':
         return <AiseoWorkspace role={role} onReplayOnboarding={() => setShowOnboarding(true)} userId={user?.uid} />;
+      case 'JARVIS':
+        return <JarvisTab />;
       case 'MERCEDES':
         return <MercedesTab />;
       case 'STITCH':
