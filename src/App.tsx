@@ -24,6 +24,7 @@ import { doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnaps
 import { GoogleGenAI, Type } from '@google/genai';
 import { WorkshopTab } from './components/WorkshopTab';
 import { StitchTab } from './components/StitchTab';
+import { File001Landing } from './components/File001Landing';
 
 // --- Utils ---
 function cn(...inputs: ClassValue[]) {
@@ -1495,7 +1496,7 @@ export default function App() {
   if (!isAuthReady) {
     return (
       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#00E676]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#C4A35A]" />
       </div>
     );
   }
@@ -1550,7 +1551,7 @@ export default function App() {
   };
 
   if (currentView === 'LANDING') {
-    return <LandingPage onLogin={handleLogin} isDarkMode={isDarkMode} toggleTheme={() => setIsDarkMode(!isDarkMode)} />;
+    return <File001Landing onLogin={handleLogin} />;
   }
 
   return (
